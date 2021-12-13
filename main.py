@@ -139,14 +139,15 @@ while True:
 
                 c.send(temp.getvalue().encode("utf-8"))
 
-
                 if local.hp <= 0:
                     print("You lose!")
                     c.send("You win!|".encode("utf-8"))
+                    c.close()
                     break
                 elif remote.hp <= 0:
                     print("You win!")
                     c.send("You lose!|".encode("utf-8"))
+                    c.close()
                     break
                 else:
                     temp = io.StringIO()
@@ -157,12 +158,12 @@ while True:
                     print(temp)
                     c.send(temp.encode("utf-8"))
 
-                    c.send("@".encode("utf-8"))
+                    c.send(f"Choose your buff kind {buffs}:".encode("utf-8"))
 
                     temp = io.StringIO()
 
                     while True:
-                        remote_buf = c.recv(1024).decode("utf-8")
+                        remote_buf = c.recv(1024).decode("utf-8").strip()
                         if remote_buf in buffs:
                             remote.buff(remote_buf, target=temp)
                             break
@@ -184,8 +185,8 @@ while True:
                 if len(data) > 0:
                     data = data.decode("utf-8")
                     flag = False
-                    if "@" in data:
-                        data = data.replace("@", "")
+                    if f"Choose your buff kind {buffs}:" in data:
+                        data = data.replace(f"Choose your buff kind {buffs}:", "")
                         flag = True
                     if "|" in data:
                         print(data.replace("|", ""))
